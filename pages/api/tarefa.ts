@@ -157,21 +157,69 @@ const handler = nc()
 
             if (status) {
                 const statusInt = Number(status);
-                if (statusInt === 1) {
+                statusInt === 1 ?
                     query = {
                         idUsuario: userId,
                         dataConclusao: null
                     }
-                } else if (statusInt === 2) {
+                    :
                     // diz para o filtro pegar todas as tarefas com dataConclusão != null
                     query = {
                         idUsuario: userId,
                         dataConclusao: { $ne: null }
                     }
-                }
             }
 
-            console.log(query)
+            if (status && periodoDe) {
+                const statusInt = Number(status);
+                statusInt === 1 ?
+                    query = {
+                        idUsuario: userId,
+                        dataConclusao: null,
+                        dataPrevistaConclusao: { $gte: periodoDe }
+                    }
+                    :
+                    // diz para o filtro pegar todas as tarefas com dataConclusão != null
+                    query = {
+                        idUsuario: userId,
+                        dataConclusao: { $ne: null },
+                        dataPrevistaConclusao: { $gte: periodoDe }
+                    }
+            }
+
+            if (status && periodoAte) {
+                const statusInt = Number(status);
+                statusInt === 1 ?
+                    query = {
+                        idUsuario: userId,
+                        dataConclusao: null,
+                        dataPrevistaConclusao: { $lte: periodoAte }
+                    }
+                    :
+                    // diz para o filtro pegar todas as tarefas com dataConclusão != null
+                    query = {
+                        idUsuario: userId,
+                        dataConclusao: { $ne: null },
+                        dataPrevistaConclusao: { $lte: periodoAte }
+                    }
+            }
+
+            if (status && periodoDe && periodoAte) {
+                const statusInt = Number(status);
+                statusInt === 1 ?
+                    query = {
+                        idUsuario: userId,
+                        dataConclusao: null,
+                        dataPrevistaConclusao: { $gte: periodoDe } && { $lte: periodoAte }
+                    }
+                    :
+                    // diz para o filtro pegar todas as tarefas com dataConclusão != null
+                    query = {
+                        idUsuario: userId,
+                        dataConclusao: { $ne: null },
+                        dataPrevistaConclusao: { $gte: periodoDe } && { $lte: periodoAte }
+                    }
+            }
 
             const tarefaEncontrada = await TarefaModel.find(query);
             return res.status(200).json(tarefaEncontrada);
