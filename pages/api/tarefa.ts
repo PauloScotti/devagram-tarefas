@@ -228,6 +228,27 @@ const handler = nc()
         }
 
         return res.status(400).json({ erro: 'Nao foi possivel obter dados da tarefa' })
+    })
+    .delete(async (req: NextApiRequest, res: NextApiResponse<RespostaPadraoMsg | any>) => {
+        try {
+
+            if (!req?.query?.id) {
+                return res.status(400).json({ erro: 'ID da tarefa é obrigatório' });
+            }
+
+            const tarefaEncontrada = await TarefaModel.findById(req?.query?.id);
+
+            if (!tarefaEncontrada) {
+                return res.status(400).json({ erro: 'Tarefa não encontrada' });
+            }
+
+            await TarefaModel.findByIdAndDelete({ _id: req?.query?.id });
+            return res.status(200).json({ msg: 'Tarefa deletada com sucesos' });
+
+        } catch (e) {
+            console.log(e);
+            return res.status(400).json({ erro: 'Nao foi possivel atualizar a tarefa:' + e });
+        }
     });
 
 export default politicaCors(validarTokeJWT(conectarMongoDB(handler)));
