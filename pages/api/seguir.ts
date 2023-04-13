@@ -59,11 +59,23 @@ const endpointSeguir = async (req: NextApiRequest, res: NextApiResponse<Resposta
         }
 
         if (req.method == 'GET') {
-            const { userId, seguidores, seguindo } = req?.query;
+            const { userId, seguidores, seguindo, id } = req?.query;
 
             const usuarioLogado = await UsuarioModel.findById(userId);
             if (!usuarioLogado) {
                 return res.status(400).json({ erro: 'Usuário logado não encontrado' });
+            }
+
+            if (id) {
+                // id do usuario e ser seguidor - query
+                const usuarioASerSeguido = await UsuarioModel.findById(id);
+                if (!usuarioASerSeguido) {
+                    return res.status(400).json({ erro: 'Usuário a ser seguido não encontrado' });
+                }
+
+                const euJaSigoEsseUsuario = await SeguidorModel.find({ usuarioId: usuarioLogado._id, usuarioSeguidoId: usuarioASerSeguido._id });
+
+                return res.status(200).json(euJaSigoEsseUsuario);
             }
 
             if (seguidores) {
