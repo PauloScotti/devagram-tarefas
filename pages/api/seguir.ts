@@ -75,7 +75,9 @@ const endpointSeguir = async (req: NextApiRequest, res: NextApiResponse<Resposta
 
                 const euJaSigoEsseUsuario = await SeguidorModel.find({ usuarioId: usuarioLogado._id, usuarioSeguidoId: usuarioASerSeguido._id });
 
-                return res.status(200).json(euJaSigoEsseUsuario);
+                const seguidoresIds = euJaSigoEsseUsuario.map(s => s.usuarioSeguidoId);
+
+                return res.status(200).json(seguidoresIds);
             }
 
             if (seguidores) {
