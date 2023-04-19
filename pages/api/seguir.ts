@@ -67,6 +67,32 @@ const endpointSeguir = async (req: NextApiRequest, res: NextApiResponse<Resposta
             }
 
             if (id) {
+
+                if (seguindo) {
+                    const seguidoresUsuarioPorId = await SeguidorModel.find({ usuarioId: id });
+
+                    var listaSeguindo = [];
+
+                    for (let i = 0; i < seguidoresUsuarioPorId.length; i++) {
+                        listaSeguindo.push(await UsuarioModel.findById({ _id: seguidoresUsuarioPorId[i].usuarioSeguidoId }));
+                    }
+
+                    return res.status(200).json(listaSeguindo);
+
+                }
+
+                if (seguidores) {
+                    const seguidoresUsuarioPorId = await SeguidorModel.find({ usuarioSeguidoId: id });
+
+                    var listaDeSeguidores = [];
+
+                    for (let i = 0; i < seguidoresUsuarioPorId.length; i++) {
+                        listaDeSeguidores.push(await UsuarioModel.findById({ _id: seguidoresUsuarioPorId[i].usuarioId }));
+                    }
+
+                    return res.status(200).json(listaDeSeguidores);
+                }
+
                 // id do usuario e ser seguidor - query
                 const usuarioASerSeguido = await UsuarioModel.findById(id);
                 if (!usuarioASerSeguido) {
@@ -80,28 +106,28 @@ const endpointSeguir = async (req: NextApiRequest, res: NextApiResponse<Resposta
                 return res.status(200).json(seguidoresIds);
             }
 
-            if (seguidores) {
-                const seguidoresUsuarioLogado = await SeguidorModel.find({ usuarioId: usuarioLogado._id });
-
-                var listaDeSeguidores = [];
-
-                for (let i = 0; i < seguidoresUsuarioLogado.length; i++) {
-                    listaDeSeguidores.push(await UsuarioModel.findById({ _id: seguidoresUsuarioLogado[i].usuarioSeguidoId }));
-                }
-
-                return res.status(200).json(listaDeSeguidores);
-            }
-
             if (seguindo) {
-                const seguidoresUsuarioLogado = await SeguidorModel.find({ usuarioSeguidoId: usuarioLogado._id });
+                const seguidoresUsuarioLogado = await SeguidorModel.find({ usuarioId: usuarioLogado._id });
 
                 var listaSeguindo = [];
 
                 for (let i = 0; i < seguidoresUsuarioLogado.length; i++) {
-                    listaSeguindo.push(await UsuarioModel.findById({ _id: seguidoresUsuarioLogado[i].usuarioId }));
+                    listaSeguindo.push(await UsuarioModel.findById({ _id: seguidoresUsuarioLogado[i].usuarioSeguidoId }));
                 }
 
                 return res.status(200).json(listaSeguindo);
+            }
+
+            if (seguidores) {
+                const seguidoresUsuarioLogado = await SeguidorModel.find({ usuarioSeguidoId: usuarioLogado._id });
+
+                var listaDeSeguidores = [];
+
+                for (let i = 0; i < seguidoresUsuarioLogado.length; i++) {
+                    listaDeSeguidores.push(await UsuarioModel.findById({ _id: seguidoresUsuarioLogado[i].usuarioId }));
+                }
+
+                return res.status(200).json(listaDeSeguidores);
             }
         }
 
