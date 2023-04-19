@@ -75,6 +75,7 @@ const endpointSeguir = async (req: NextApiRequest, res: NextApiResponse<Resposta
 
                     for (let i = 0; i < seguidoresUsuarioPorId.length; i++) {
                         listaSeguindo.push(await UsuarioModel.findById({ _id: seguidoresUsuarioPorId[i].usuarioSeguidoId }));
+                        listaSeguindo[i].senha = null;
                     }
 
                     return res.status(200).json(listaSeguindo);
@@ -88,6 +89,11 @@ const endpointSeguir = async (req: NextApiRequest, res: NextApiResponse<Resposta
 
                     for (let i = 0; i < seguidoresUsuarioPorId.length; i++) {
                         listaDeSeguidores.push(await UsuarioModel.findById({ _id: seguidoresUsuarioPorId[i].usuarioId }));
+                        listaDeSeguidores[i].senha = null;
+                    }
+
+                    for (const seguidores of listaDeSeguidores) {
+                        seguidores.senha = null;
                     }
 
                     return res.status(200).json(listaDeSeguidores);
@@ -113,6 +119,7 @@ const endpointSeguir = async (req: NextApiRequest, res: NextApiResponse<Resposta
 
                 for (let i = 0; i < seguidoresUsuarioLogado.length; i++) {
                     listaSeguindo.push(await UsuarioModel.findById({ _id: seguidoresUsuarioLogado[i].usuarioSeguidoId }));
+                    listaSeguindo[i].senha = null;
                 }
 
                 return res.status(200).json(listaSeguindo);
@@ -125,6 +132,7 @@ const endpointSeguir = async (req: NextApiRequest, res: NextApiResponse<Resposta
 
                 for (let i = 0; i < seguidoresUsuarioLogado.length; i++) {
                     listaDeSeguidores.push(await UsuarioModel.findById({ _id: seguidoresUsuarioLogado[i].usuarioId }));
+                    listaDeSeguidores[i].senha = null;
                 }
 
                 return res.status(200).json(listaDeSeguidores);
