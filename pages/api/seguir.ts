@@ -72,13 +72,25 @@ const endpointSeguir = async (req: NextApiRequest, res: NextApiResponse<Resposta
                     const seguidoresUsuarioPorId = await SeguidorModel.find({ usuarioId: id });
 
                     var listaSeguindo = [];
+                    var listaDeSeguindoOuNao = [];
 
                     for (let i = 0; i < seguidoresUsuarioPorId.length; i++) {
                         listaSeguindo.push(await UsuarioModel.findById({ _id: seguidoresUsuarioPorId[i].usuarioSeguidoId }));
                         listaSeguindo[i].senha = null;
+
+                        const euJaSigoEsseUsuario = await SeguidorModel.find({ usuarioId: usuarioLogado._id, usuarioSeguidoId: listaSeguindo[i]._id });
+
+                        const seguidoresIds = euJaSigoEsseUsuario.map(s => s.usuarioSeguidoId);
+
+                        listaDeSeguindoOuNao.push(seguidoresIds)
                     }
 
-                    return res.status(200).json(listaSeguindo);
+                    const dadosRetorno = {
+                        listaSeguindo,
+                        listaDeSeguindoOuNao
+                    }
+
+                    return res.status(200).json(dadosRetorno);
 
                 }
 
@@ -86,17 +98,25 @@ const endpointSeguir = async (req: NextApiRequest, res: NextApiResponse<Resposta
                     const seguidoresUsuarioPorId = await SeguidorModel.find({ usuarioSeguidoId: id });
 
                     var listaDeSeguidores = [];
+                    var listaDeSeguindoOuNao = [];
 
                     for (let i = 0; i < seguidoresUsuarioPorId.length; i++) {
                         listaDeSeguidores.push(await UsuarioModel.findById({ _id: seguidoresUsuarioPorId[i].usuarioId }));
                         listaDeSeguidores[i].senha = null;
+
+                        const euJaSigoEsseUsuario = await SeguidorModel.find({ usuarioId: usuarioLogado._id, usuarioSeguidoId: listaDeSeguidores[i]._id });
+
+                        const seguidoresIds = euJaSigoEsseUsuario.map(s => s.usuarioSeguidoId);
+
+                        listaDeSeguindoOuNao.push(seguidoresIds)
                     }
 
-                    for (const seguidores of listaDeSeguidores) {
-                        seguidores.senha = null;
+                    const dadosRetorno = {
+                        listaDeSeguidores,
+                        listaDeSeguindoOuNao
                     }
 
-                    return res.status(200).json(listaDeSeguidores);
+                    return res.status(200).json(dadosRetorno);
                 }
 
                 // id do usuario e ser seguidor - query
@@ -116,26 +136,50 @@ const endpointSeguir = async (req: NextApiRequest, res: NextApiResponse<Resposta
                 const seguidoresUsuarioLogado = await SeguidorModel.find({ usuarioId: usuarioLogado._id });
 
                 var listaSeguindo = [];
+                var listaDeSeguindoOuNao = [];
 
                 for (let i = 0; i < seguidoresUsuarioLogado.length; i++) {
                     listaSeguindo.push(await UsuarioModel.findById({ _id: seguidoresUsuarioLogado[i].usuarioSeguidoId }));
                     listaSeguindo[i].senha = null;
+
+                    const euJaSigoEsseUsuario = await SeguidorModel.find({ usuarioId: usuarioLogado._id, usuarioSeguidoId: listaSeguindo[i]._id });
+
+                    const seguidoresIds = euJaSigoEsseUsuario.map(s => s.usuarioSeguidoId);
+
+                    listaDeSeguindoOuNao.push(seguidoresIds)
                 }
 
-                return res.status(200).json(listaSeguindo);
+                const dadosRetorno = {
+                    listaSeguindo,
+                    listaDeSeguindoOuNao
+                }
+
+                return res.status(200).json(dadosRetorno);
             }
 
             if (seguidores) {
                 const seguidoresUsuarioLogado = await SeguidorModel.find({ usuarioSeguidoId: usuarioLogado._id });
 
                 var listaDeSeguidores = [];
+                var listaDeSeguindoOuNao = [];
 
                 for (let i = 0; i < seguidoresUsuarioLogado.length; i++) {
                     listaDeSeguidores.push(await UsuarioModel.findById({ _id: seguidoresUsuarioLogado[i].usuarioId }));
                     listaDeSeguidores[i].senha = null;
+
+                    const euJaSigoEsseUsuario = await SeguidorModel.find({ usuarioId: usuarioLogado._id, usuarioSeguidoId: listaDeSeguidores[i]._id });
+
+                    const seguidoresIds = euJaSigoEsseUsuario.map(s => s.usuarioSeguidoId);
+
+                    listaDeSeguindoOuNao.push(seguidoresIds)
                 }
 
-                return res.status(200).json(listaDeSeguidores);
+                const dadosRetorno = {
+                    listaDeSeguidores,
+                    listaDeSeguindoOuNao
+                }
+
+                return res.status(200).json(dadosRetorno);
             }
         }
 
